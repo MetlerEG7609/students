@@ -44,6 +44,74 @@
             margin-bottom: 24px;
         }
 
+        .token-btn {
+            background: #00e676;
+            color: #000;
+            border: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: 0.2s;
+        }
+
+        .token-btn:hover {
+            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .token-btn:active {
+            transform: scale(0.97);
+        }
+
+        .token-btn.hidden {
+            display: none;
+        }
+
+        .token-area {
+            display: none;
+            margin-bottom: 24px;
+        }
+
+        .token-area.show {
+            display: block;
+        }
+
+        .token-value {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #00e676;
+            letter-spacing: 1.5px;
+            word-break: break-all;
+            direction: ltr;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        .copy-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #aaa;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+            padding: 6px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: #00e676;
+            color: #00e676;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -77,6 +145,13 @@
         <div class="label">عدد الطلاب</div>
         <div class="count" id="count">0</div>
 
+        <button class="token-btn" id="tokenBtn" onclick="generateToken()">My Token</button>
+
+        <div class="token-area" id="tokenArea">
+            <div class="token-value" id="tokenValue"></div>
+            <button class="copy-btn" onclick="copyToken()">نسخ</button>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -89,20 +164,63 @@
         </table>
     </div>
 
-    <script src="students.js"></script>
     <script>
-        document.getElementById("count").textContent = data.length;
+        var API_URL = "https://api.jsonbin.io/v3/b/XXXXXXXXXXXXXXXXXXXXXXXX/latest";
+        var currentToken = "";
 
-        const tbody = document.getElementById("tbody");
+        fetch(API_URL)
+            .then(function (res) { return res.json(); })
+            .then(function (res) {
+                var data = res.record;
 
-        data.forEach(s => {
-            const tr = document.createElement("tr");
-            tr.innerHTML =
-                "<td>" + s.name + "</td>" +
-                "<td>" + s.age + "</td>" +
-                "<td>" + s.address + "</td>";
-            tbody.appendChild(tr);
-        });
+                document.getElementById("count").textContent = data.length;
+
+                var tbody = document.getElementById("tbody");
+                data.forEach(function (s) {
+                    var tr = document.createElement("tr");
+                    tr.innerHTML =
+                        "<td>" + s.name + "</td>" +
+                        "<td>" + s.age + "</td>" +
+                        "<td>" + s.address + "</td>";
+                    tbody.appendChild(tr);
+                });
+            });
+
+        var savedToken = localStorage.getItem("myToken");
+        if (savedToken) {
+            currentToken = savedToken;
+            document.getElementById("tokenBtn").classList.add("hidden");
+            document.getElementById("tokenValue").textContent = savedToken;
+            document.getElementById("tokenArea").classList.add("show");
+        }
+
+        function generateToken() {
+            var chars = "1q2w3e4r5t6y7u8i9o0p1a2s3d4f5g6h7j8k9l1z2x3c4v5b6n7m890";
+            var token = "";
+            var randomValues = new Uint32Array(31);
+            crypto.getRandomValues(randomValues);
+            for (var i = 0; i < 31; i++) {
+                token += chars[randomValues[i] % chars.length];
+            }
+            currentToken = token;
+            localStorage.setItem("myToken", token);
+
+            document.getElementById("tokenBtn").classList.add("hidden");
+            document.getElementById("tokenValue").textContent = token;
+            document.getElementById("tokenArea").classList.add("show");
+        }
+
+        function copyToken() {
+            if (!currentToken) return;
+            navigator.clipboard.writeText(currentToken).catch(function () {
+                var ta = document.createElement("textarea");
+                ta.value = currentToken;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand("copy");
+                document.body.removeChild(ta);
+            });
+        }
     </script>
 
 </body>
