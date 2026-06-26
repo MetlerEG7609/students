@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عدد الطلاب</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f0f0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Tajawal', sans-serif;
+            color: #fff;
+        }
+
+        .box {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .label {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .count {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1a1a1a;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #aaa;
+            border-bottom: 2px solid #333;
+        }
+
+        td {
+            padding: 12px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #1a1a1a;
+            color: #ddd;
+        }
+
+        tr:hover td {
+            background: #161616;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <div class="label">عدد الطلاب</div>
+        <div class="count" id="count">0</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>العمر</th>
+                    <th>العنوان</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+
+    <script src="students.js"></script>
+    <script>
+        document.getElementById("count").textContent = data.length;
+
+        const tbody = document.getElementById("tbody");
+
+        data.forEach(s => {
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+                "<td>" + s.name + "</td>" +
+                "<td>" + s.age + "</td>" +
+                "<td>" + s.address + "</td>";
+            tbody.appendChild(tr);
+        });
+    </script>
+
+</body>
+
+</html>
